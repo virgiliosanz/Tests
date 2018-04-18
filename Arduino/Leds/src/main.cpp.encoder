@@ -1,0 +1,48 @@
+#include <Arduino.h>
+#include <Encoder.h>
+
+#define WHITE 9
+#define RED 6
+#define GREEN 7
+#define BLUE 8
+const byte leds[] = { WHITE, RED, GREEN, BLUE };
+
+// Change these two numbers to the pins connected to your encoder.
+//   Best Performance: both pins have interrupt capability
+//   Good Performance: only the first pin has interrupt capability
+//   Low Performance:  neither pin has interrupt capability
+Encoder encoder(13, 12);
+#define STEP 2
+
+void setup() {
+	Serial.begin(115200);
+
+	for (byte pin : leds) {
+		pinMode(pin, OUTPUT);
+		digitalWrite(pin, HIGH);
+	}
+}
+
+long last_encoder_position = -999;
+byte pwm = 0;
+void loop() {
+
+	long encoder_position = encoder.read();
+
+	if (last_encoder_position != encoder_position) {
+		if (encoder_position > last_encoder_position && pwm < 255) {
+			pwm += STEP;
+		} else if (encoder_position < last_encoder_position && pwm > 0) {
+			pwm -= STEP;
+		}
+
+		last_encoder_position = encoder_position;
+		analogWrite(WHITE, pwm);
+
+		Serial.print("Encoder position: ");
+		Serial.print(encoder_position);
+		Serial.print("  -  PWM value: ");
+		Serial.print(pwm);
+		Serial.println("");
+	}
+}

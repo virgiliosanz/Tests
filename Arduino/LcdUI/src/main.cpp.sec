@@ -1,0 +1,43 @@
+
+#include <Arduino.h>
+#include <LCD.h>
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
+#include <phi_prompt.h>
+
+// <Malpartida>
+LiquidCrystal_I2C lcd_i2c(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
+LCD *lcd = &lcd_i2c;
+// </Malpartida>
+
+char mapping[] = {'U', 'D', 'L', 'R', 'B', 'A'};
+byte pins[] = {A1, A5, A0, A2, A3, A4};
+phi_button_groups buttons(mapping, pins, 6);
+multiple_button_input *keypads[] = {&buttons, 0};
+char up_keys[] = {"U"};
+char down_keys[] = {"D"};
+char left_keys[] = {"L"};
+char right_keys[] = {"R"};
+char ent_keys[] = {"B"};
+char esc_keys[] = {"A"};
+char *function_keys[] = {up_keys,    down_keys, left_keys,
+                         right_keys, ent_keys,  esc_keys};
+
+void setup() {
+  Serial.begin(115200);
+
+  lcd->begin(20, 4);
+
+  init_phi_prompt(lcd, keypads, function_keys, 20, 4, '~');
+  /*
+  simple_text_area("Developed by:\nDr.Liu "
+                   "11/25/12\nhttp://liudr.wordpress.com\nThis is an "
+                   "example.\nPress Confirm to continue");
+*/
+  // lcd->clear();
+}
+
+void loop() {
+  center_text("HOLA");
+  delay(2000);
+}

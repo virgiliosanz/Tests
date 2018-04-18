@@ -1,0 +1,5 @@
+-x
+c++
+-Wall
+-Werror
+-std=c++1y

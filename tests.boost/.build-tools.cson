@@ -1,0 +1,28 @@
+providers: [
+  {
+    key: "makefile"
+    config:
+      file: "./Makefile"
+      regex: "^[A-Za-z][^$]+$"
+      overwrite_wd: true
+      props:
+        wd: "."
+        env: {}
+        modifier: {}
+        stdout:
+          pty: false
+          highlighting: "nh"
+          ansi_option: "ignore"
+        stderr:
+          highlighting: "nh"
+          ansi_option: "ignore"
+        output:
+          console:
+            close_success: true
+            queue_in_buffer: true
+            stdin: false
+          linter:
+            no_trace: false
+        version: 1
+  }
+]

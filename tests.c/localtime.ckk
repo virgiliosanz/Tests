@@ -1,0 +1,65 @@
+#define _XOPEN_SOURCE
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+
+#define SIZE 256
+
+
+void
+print_tm(const struct tm *dt)
+{
+	printf("tm is -> %d/%d/%d %d:%d:%d (%d, %d)\n",
+		dt->tm_mday, dt->tm_mon + 1, dt->tm_year + 1900,
+		dt->tm_hour, dt->tm_min, dt->tm_sec,
+		dt->tm_wday + 1, dt->tm_isdst);
+}
+
+int
+main()
+{
+	time_t t = time(NULL);
+	struct tm lt = { 0 };
+
+	localtime_r(&t, &lt);
+	print_tm(&lt);
+
+	printf("Offset to GMT is %lds.\n", lt.tm_gmtoff);
+	printf("The time zone is '%s'.\n", lt.tm_zone);
+
+	char s[101];
+	strftime(s, 101, "%Y%m%d%H%M%z", &lt);
+
+	printf("El tiempo es: >%s<\n", s);
+	// YYYY-MM-DDTHH:MM:SS.000Z
+	strftime(s, 101, "%Y-%m-%dT%H:%M:%S.%zZ", &lt);
+	printf("El tiempo es: >%s<\n", s);
+
+	char *ss = "2014-08-25T00:05:00.0100Z";
+	printf("string is: %s\n", ss);
+	strptime(ss, "%Y-%m-%dT%H:%M:%S.%zZ", &lt);
+	print_tm(&lt);
+
+	time_t curtime;
+	struct tm *loctime;
+
+	/* Get the current time. */
+	curtime = time(NULL);
+	loctime = localtime (&curtime);
+	char buffer[SIZE];
+
+
+	/* Print out the date and time in the standard format. */
+	fputs (asctime (loctime), stdout);
+
+	/* Print it out in a nice format. */
+	printf("%ld segundos sing 1/1/1970\n", curtime);
+	strftime (buffer, SIZE, "Today is %A, %B %d.\n", loctime);
+	fputs (buffer, stdout);
+	strftime (buffer, SIZE, "The time is %I:%M %p.\n", loctime);
+	fputs (buffer, stdout);
+
+	return EXIT_SUCCESS;
+}
+
+
